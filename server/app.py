@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 
+from ps import *
+
 import logging
 
 # Configure logging
@@ -16,8 +18,8 @@ CORS(app, resources={
     }
 })
 
-@app.route('/api/users', methods=['POST'])
-def user_route():
+@app.route('/api/initialize_001', methods=['POST'])
+def init_001():
     return get_user()
 
 @app.route("/")
