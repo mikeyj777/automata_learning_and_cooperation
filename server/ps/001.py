@@ -19,14 +19,21 @@ Implement Conway's Game of Life with a survival tracking system. Each cell has a
 
 ---
 
-
 '''
+
+
 from classes.cell import Cell
+from classes.grid import Grid
 
 def initialize(data):
-  num_cells = data['cellCount']
   current_epoch = data['currentEpoch']
   target_formation = data['targetFormation']
+  grid = Grid(grid_size=100)
+  grid.initialize_game(target_pattern=target_formation)
+  id = data['id']
+  if id is None:
+      id = -1
   cells = []
   for i in num_cells:
-    cell = Cell()
+    id += 1
+    cell = Cell(id = 1, current_epoch=current_epoch)
