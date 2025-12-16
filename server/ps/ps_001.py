@@ -21,19 +21,22 @@ Implement Conway's Game of Life with a survival tracking system. Each cell has a
 
 '''
 
+from flask import jsonify
 
 from classes.cell import Cell
 from classes.grid import Grid
+from resources.grid_and_pattern import initialize_grid
 
 def initialize(data):
   current_epoch = data['currentEpoch']
-  target_formation = data['targetFormation']
-  grid = Grid(grid_size=100)
-  grid.initialize_game(target_pattern=target_formation)
-  id = data['id']
+  target_pattern = data['targetPattern']
+  grid_size = data['gridSize']
+  id = data['lastId']
   if id is None:
       id = -1
-  cells = []
-  for i in num_cells:
-    id += 1
-    cell = Cell(id = 1, current_epoch=current_epoch)
+  grid = initialize_grid(target_pattern=target_pattern, current_epoch=current_epoch, grid_size=grid_size, id=id)
+  return jsonify({'grid': grid}, 200)
+
+def step(data):
+  pass
+  

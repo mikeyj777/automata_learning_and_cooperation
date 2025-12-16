@@ -1,5 +1,24 @@
 import numpy as np
 
+def initialize_grid(target_pattern, current_epoch, grid_size=100, id=-1):
+    gol_pattern = get_game_of_life_pattern(target_pattern=target_pattern, grid_size=grid_size)
+    cell_grid = []
+    for i in range(100):
+        row = []
+        for j in range(100):
+            id += 1
+            row.append({
+                'id': id,
+                'coords': [i, j],
+                'is_active': bool(gol_pattern[i, j]),
+                'birthday': current_epoch,
+                'parent': -1,
+                'children': [],
+                'fitness_score': 0,
+            })
+        cell_grid.append(row)
+    return cell_grid
+
 def get_game_of_life_pattern(target_pattern, grid_size=100):
     """
     Returns a grid with the specified Game of Life pattern.

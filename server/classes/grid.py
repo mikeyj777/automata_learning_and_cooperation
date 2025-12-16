@@ -1,6 +1,6 @@
 import numpy as np
 
-from resources.pattern import get_game_of_life_pattern
+from resources.grid_and_pattern import get_game_of_life_pattern
 
 class Grid:
 
@@ -10,4 +10,3 @@ class Grid:
   
   def initialize_game(self, target_pattern):
     self.grid = get_game_of_life_pattern(target_pattern=target_pattern, grid_size=self.grid_size)
-    
