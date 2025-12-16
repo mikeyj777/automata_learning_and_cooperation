@@ -12,8 +12,6 @@ def initialize_grid(target_pattern, current_epoch, grid_size=100, id=-1):
                 'coords': [i, j],
                 'is_active': bool(gol_pattern[i, j]),
                 'birthday': current_epoch,
-                'parent': -1,
-                'children': [],
                 'fitness_score': 0,
             })
         cell_grid.append(row)
