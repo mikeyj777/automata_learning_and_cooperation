@@ -3,9 +3,9 @@ import numpy as np
 def initialize_grid(target_pattern, current_epoch, grid_size=100, id=-1):
     gol_pattern = get_game_of_life_pattern(target_pattern=target_pattern, grid_size=grid_size)
     cell_grid = []
-    for i in range(100):
+    for i in range(grid_size):
         row = []
-        for j in range(100):
+        for j in range(grid_size):
             id += 1
             row.append({
                 'id': id,

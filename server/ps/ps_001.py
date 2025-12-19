@@ -20,6 +20,7 @@ Implement Conway's Game of Life with a survival tracking system. Each cell has a
 ---
 
 '''
+import copy
 import numpy as np
 from flask import jsonify, request
 
@@ -35,43 +36,49 @@ def initialize(data):
   grid = initialize_grid(target_pattern=target_pattern, current_epoch=current_epoch, grid_size=grid_size, id=id)
   return jsonify({'grid': grid}), 200
 
-def step(data):
-  pass
-
-
 def safe_slice(grid_np, i, j):
   start_i = max(i - 1, 0)
-  end_i = min(i + 1, grid_np.shape[0])
-  start_j = max(j-1, 0)
-  end_j = min(j+1, grid_np.shape[1])
+  end_i = min(i + 2, grid_np.shape[0])
+  start_j = max(j - 1, 0)
+  end_j = min(j + 2, grid_np.shape[1])
   
   return grid_np[start_i:end_i, start_j:end_j]
 
-def count_actives_and_max_fitness_around_slice(slice, origin_cell_is_active):
+def should_cell_be_active(slice, origin_cell_is_active):
   gol_score = sum(d['is_active'] for d in slice.flat)
-  max_fitness = max(d['fitness_score'] for d in slice.ravel())
   
   if origin_cell_is_active:
     gol_score -=1
   
-  return {'gol_score': gol_score, 'max_fitness': max_fitness}
+  activate = False
+  if origin_cell_is_active:
+    if gol_score == 2 or gol_score == 3:
+      activate = True
+  else:
+    if gol_score == 3:
+      activate = True
+  
+  return activate
 
-def cell_should_be_active_and_max_fitness(grid_np, i, j):
-  slice = safe_slice(grid_np, i, j)
-  resp = count_actives_and_max_fitness_around_slice(slice=slice, origin_cell_is_active=slice[i,j]['is_active'])
-  gol_score = resp['gol_score']
-  max_fitness = resp['max_fitness']
-  return {'activate': gol_score == 2 or gol_score == 3, 'max_fitness': max_fitness}
+def get_max_fitness_of_neighbors(slice):
+  return max(d['fitness_score'] for d in slice.ravel())
 
 def update_grid(grid):
   grid_np = np.array(grid, dtype=dict)
+  grid_for_update = copy.deepcopy(grid_np)
   for i in range(grid_np.shape[0]):
     for j in range(grid_np.shape[1]):
-      resp = cell_should_be_active_and_max_fitness(grid_np=grid_np, i=i, j=j)
-      grid_np[i, j]['is_active'] = resp['activate']
-      max_fitness = resp['max_fitness']
+      slice = safe_slice(grid_np, i, j)
+      activate = should_cell_be_active(slice=slice, origin_cell_is_active=grid_np[i,j]['is_active'])
+      max_fitness = get_max_fitness_of_neighbors(slice)
+      grid_for_update[i, j]['is_active'] = activate
       if grid_np[i, j]['is_active']:
-        grid[i, j]['fitness_score'] += max_fitness
+        grid_for_update[i, j]['fitness_score'] += max_fitness
       else:
-        grid[i, j]['fitness_score'] = 0
-  
+        grid_for_update[i, j]['fitness_score'] = 0
+  return grid_for_update.tolist()
+
+def step(data):
+  grid = data['grid']
+  grid = update_grid(grid)
+  return jsonify({'grid': grid}), 200
