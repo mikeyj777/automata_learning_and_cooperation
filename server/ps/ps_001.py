@@ -60,8 +60,14 @@ def should_cell_be_active(slice, origin_cell_is_active):
   
   return activate
 
-def get_max_fitness_of_neighbors(slice):
-  return max(d['fitness_score'] for d in slice.ravel())
+def increase_score_for_precedents(slice):
+  for i in range(slice.shape[0]):
+    for j in range(slice.shape[1]):
+      if i == 1 and j == 1:
+        continue
+      if slice[i, j]['is_active']:
+        slice[i, j]['fitness_score'] += 1
+  
 
 def update_grid(grid):
   grid_np = np.array(grid, dtype=dict)
@@ -70,12 +76,13 @@ def update_grid(grid):
     for j in range(grid_np.shape[1]):
       slice = safe_slice(grid_np, i, j)
       activate = should_cell_be_active(slice=slice, origin_cell_is_active=grid_np[i,j]['is_active'])
-      max_fitness = get_max_fitness_of_neighbors(slice)
       grid_for_update[i, j]['is_active'] = activate
-      if grid_np[i, j]['is_active']:
-        grid_for_update[i, j]['fitness_score'] += max_fitness
-      else:
+      if not activate:
         grid_for_update[i, j]['fitness_score'] = 0
+        continue
+      slice_new = safe_slice(grid_for_update, i, j)
+      increase_score_for_precedents(slice_new)
+      
   return grid_for_update.tolist()
 
 def step(data):
