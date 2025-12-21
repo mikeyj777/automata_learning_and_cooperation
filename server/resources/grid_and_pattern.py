@@ -6,12 +6,8 @@ def initialize_grid(target_pattern, current_epoch, grid_size=100, id=-1):
     for i in range(grid_size):
         row = []
         for j in range(grid_size):
-            id += 1
             row.append({
-                'id': id,
-                'coords': [i, j],
                 'is_active': bool(gol_pattern[i, j]),
-                'birthday': current_epoch,
                 'fitness_score': 0,
             })
         cell_grid.append(row)

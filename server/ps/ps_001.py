@@ -30,10 +30,7 @@ def initialize(data):
   current_epoch = data['currentEpoch']
   target_pattern = data['targetPattern']
   grid_size = data['gridSize']
-  id = data['lastId']
-  if id is None:
-      id = -1
-  grid = initialize_grid(target_pattern=target_pattern, current_epoch=current_epoch, grid_size=grid_size, id=id)
+  grid = initialize_grid(target_pattern=target_pattern, current_epoch=current_epoch, grid_size=grid_size)
   return jsonify({'grid': grid}), 200
 
 def safe_slice(grid_np, i, j):

@@ -22,7 +22,7 @@ CORS(app, resources={
 @app.route('/api/initialize_001', methods=['POST'])
 def init_001():
     data = request.get_json()
-    return ps_001.initialize()
+    return ps_001.initialize(data)
 
 @app.route("/")
 def home():
