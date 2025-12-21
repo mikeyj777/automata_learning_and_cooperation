@@ -24,6 +24,11 @@ def init_001():
     data = request.get_json()
     return ps_001.initialize(data)
 
+@app.route('/api/step_001', methods=['POST'])
+def step_001():
+    data = request.get_json()
+    return ps_001.step(data)
+
 @app.route("/")
 def home():
     return jsonify({"message": "This is the API."})

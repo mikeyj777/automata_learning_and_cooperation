@@ -37,7 +37,7 @@ const Ps001 = ( {isRunning, epoch, resetGrid, setResetGrid, probControlsDict}) =
   
   const getGridDetails = async (initialize = false) => {
     
-    const ep = initialize ? 'initialize_001' : 'update_001';
+    const ep = initialize ? 'initialize_001' : 'step_001';
     const url = API_BASE_URL + ep;
     const { targetPattern, gridSize } = probControlsDict;
     try {
@@ -50,6 +50,7 @@ const Ps001 = ( {isRunning, epoch, resetGrid, setResetGrid, probControlsDict}) =
           currentEpoch: 0,
           targetPattern: targetPattern,
           gridSize: gridSize,
+          grid:grid,
         })
       });
 
@@ -98,11 +99,11 @@ const Ps001 = ( {isRunning, epoch, resetGrid, setResetGrid, probControlsDict}) =
   }, [grid])
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && epoch > 0) {
       getGridDetails(false);
       drawGrid();
     }
-  }, [isRunning])
+  }, [isRunning, epoch])
 
   // render grid
   const fxnResetGrid = () => {
